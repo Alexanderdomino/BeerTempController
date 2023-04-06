@@ -29,6 +29,10 @@ class LCDObserver(IObserver):
     )
 
     lcd.clear()
+    # Define the custom character for the degree symbol
+    degree_char = bytes([0x02,0x05,0x02,0x00,0x00,0x00,0x00,0x00])
+
+    lcd.create_char(1, degree_char)
 
     def update(self, subject: ISubject) -> None:
-        self.lcd.message = "Temp:    %.2f C\nTarget:  %.2f C" % (subject._currentTemp, targetTemp)
+        self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (subject._currentTemp, 1, targetTemp, 1)
