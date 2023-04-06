@@ -9,6 +9,9 @@ from time import sleep
 
 #LIBRARIES RPI
 from w1thermsensor import W1ThermSensor, Unit
+import board
+import digitalio
+import adafruit_character_lcd.character_lcd as characterlcd
 
 """-------------------------------------Global variables-------------------------------------"""
 
@@ -110,18 +113,27 @@ class Observer(ABC):
         pass
 
 # Define the LCDObserver class, which is a subclass of Observer
-
-# Define the LCDObserver class, which is a subclass of Observer
 class LCDObserver(Observer):
 
+    """--------------------------------------Display Setup---------------------------------------"""
+    # LCD size
+    lcd_columns = 16
+    lcd_rows = 2
+
+    # GPIO setup
+    lcd_rs = digitalio.DigitalInOut(board.D23)
+    lcd_en = digitalio.DigitalInOut(board.D11)
+    lcd_d7 = digitalio.DigitalInOut(board.D27)
+    lcd_d6 = digitalio.DigitalInOut(board.D22)
+    lcd_d5 = digitalio.DigitalInOut(board.D10)
+    lcd_d4 = digitalio.DigitalInOut(board.D9)
+
+    # Definition of object
+    lcd = characterlcd.Character_LCD_Mono(
+        lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows
+    )
     def update(self, subject: Subject) -> None:
-        print(f"Writing to the LCD Display: {subject._currentTemp}")
-
-
-class TempController(Observer):
-
-    def update(self, subject: Subject) -> None:
-        print(f"Writing to the LCD Display: {subject._currentTemp}")
+        self.lcd.message = "Temp:    %.2f C\nTarget:  20.00 C" % (subject._currentTemp)
 
 
 """---------------------------------------Program Start--------------------------------------"""
@@ -133,9 +145,6 @@ if __name__ == "__main__":
     displayManager = LCDObserver()
     sensor.attach(displayManager)
 
-    #Testing
-    sensor.readTemperature()
-    sleep(5)
-    sensor.readTemperature()
-    sleep(5)
-    sensor.readTemperature()
+    while True:
+        sensor.readTemperature()
+        sleep(0.5)
