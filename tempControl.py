@@ -15,7 +15,7 @@ import adafruit_character_lcd.character_lcd as characterlcd
 
 """-------------------------------------Global variables-------------------------------------"""
 
-targetTemp = 20
+targetTemp = 27.00
 allowedHysteresis = 1
 
 """--------------------------------------Observer Pattern------------------------------------"""
@@ -82,7 +82,7 @@ class TemperatureSensor(Subject):
         Trigger an update in each subscriber.
         """
 
-        print("Subject: Notifying observers...")
+        #print("Subject: Notifying observers...")
         for observer in self._observers:
             observer.update(self)
 
@@ -91,10 +91,10 @@ class TemperatureSensor(Subject):
         Reads the current temperature and notifies observers of about the new reading.
         """
 
-        print("\nSubject: Reading temperature.")
+        #print("\nSubject: Reading temperature.")
         self._currentTemp = self.tempSensor.get_temperature()
 
-        print(f"Subject: Current Temperature is changed to: {self._currentTemp}")
+        #print(f"Subject: Current Temperature is changed to: {self._currentTemp}")
         self.notify()
 
 
@@ -112,7 +112,7 @@ class Observer(ABC):
         """
         pass
 
-# Define the LCDObserver class, which is a subclass of Observer
+# Defintion of LCDObserver class, which is a subclass of Observer
 class LCDObserver(Observer):
 
     """--------------------------------------Display Setup---------------------------------------"""
@@ -132,8 +132,53 @@ class LCDObserver(Observer):
     lcd = characterlcd.Character_LCD_Mono(
         lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows
     )
+
+    lcd.clear()
+
     def update(self, subject: Subject) -> None:
-        self.lcd.message = "Temp:    %.2f C\nTarget:  20.00 C" % (subject._currentTemp)
+        self.lcd.message = "Temp:    %.2f C\nTarget:  %.2f C" % (subject._currentTemp, targetTemp)
+
+# Defintion of TempController class, which is a subclass of Observer
+class TempController(Observer):
+
+    IDLE = 0
+    COOLING = 1
+    HEATING = 2
+
+    def __init__(self):
+        self.state = TempController.IDLE
+
+    def update(self, subject: Subject) -> None:
+        if self.state == TempController.IDLE:
+            if subject._currentTemp > (targetTemp + allowedHysteresis):
+                #implement cooling logic
+                print("Controller: Start cooling")
+                self.state = TempController.COOLING
+            
+            elif subject._currentTemp < (targetTemp - allowedHysteresis):
+                #implement heating logic
+                print("Controller: Start heating")
+                self.state = TempController.HEATING
+
+        elif self.state == TempController.COOLING:
+            if subject._currentTemp > targetTemp:
+                #continue cooling
+                print("Controller: Cooling in progress")
+            else:
+                #turn off cooling
+                print("Controller: Cooling complete")
+                self.state = TempController.IDLE
+
+        elif self.state == TempController.HEATING:
+            if subject._currentTemp < targetTemp:
+                #continue heating
+                print("Controller: Heating in progress")
+            else:
+                #turn off heating
+                print("Controller: Heating complete")
+                self.state = TempController.IDLE
+
+
 
 
 """---------------------------------------Program Start--------------------------------------"""
@@ -144,6 +189,8 @@ if __name__ == "__main__":
     sensor = TemperatureSensor()
     displayManager = LCDObserver()
     sensor.attach(displayManager)
+    controller = TempController()
+    sensor.attach(controller)
 
     while True:
         sensor.readTemperature()
