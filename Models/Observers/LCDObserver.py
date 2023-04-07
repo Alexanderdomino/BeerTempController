@@ -5,10 +5,19 @@ import adafruit_character_lcd.character_lcd as characterlcd
 from Interfaces.IObserver import IObserver
 from Interfaces.ISubject import ISubject
 
-targetTemp = 27.00
+from Models.Subjects.TemperatureTarget import TemperatureTarget
+from Models.Subjects.TemperatureSensor import TemperatureSensor
+
 
 # Defintion of LCDObserver class, which is a subclass of Observer
 class LCDObserver(IObserver):
+
+    _currentTemp: int = 0
+    _targetTemp: int = 0
+    _hysteresis: int = 0
+
+    SETUP = 0
+    RUNNING = 1
 
     """--------------------------------------Display Setup---------------------------------------"""
     # LCD size
@@ -16,23 +25,47 @@ class LCDObserver(IObserver):
     lcd_rows = 2
 
     # GPIO setup
-    lcd_rs = digitalio.DigitalInOut(board.D23)
-    lcd_en = digitalio.DigitalInOut(board.D11)
-    lcd_d7 = digitalio.DigitalInOut(board.D27)
-    lcd_d6 = digitalio.DigitalInOut(board.D22)
-    lcd_d5 = digitalio.DigitalInOut(board.D10)
-    lcd_d4 = digitalio.DigitalInOut(board.D9)
+    lcd_rs = digitalio.DigitalInOut(board.D26)
+    lcd_en = digitalio.DigitalInOut(board.D19)
+    lcd_d7 = digitalio.DigitalInOut(board.D0)
+    lcd_d6 = digitalio.DigitalInOut(board.D5)
+    lcd_d5 = digitalio.DigitalInOut(board.D6)
+    lcd_d4 = digitalio.DigitalInOut(board.D13)
 
     # Definition of object
     lcd = characterlcd.Character_LCD_Mono(
         lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, lcd_columns, lcd_rows
     )
 
-    lcd.clear()
+    
     # Define the custom character for the degree symbol
     degree_char = bytes([0x02,0x05,0x02,0x00,0x00,0x00,0x00,0x00])
 
     lcd.create_char(1, degree_char)
 
+    def __init__(self):
+        self.lcd.clear()
+        self.state = LCDObserver.SETUP
+        self.lcd.message = "   Welcome HJ   \nPress Any Button"
+
     def update(self, subject: ISubject) -> None:
-        self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (subject._currentTemp, 1, targetTemp, 1)
+        if isinstance(subject, TemperatureTarget):
+            if subject.state == TemperatureTarget.TEMPTARGET:
+                self._targetTemp = subject._targetTemp
+                self.lcd.clear()
+                self.lcd.message = " Select Target: \n     %.2f%cC    " % (self._targetTemp, 1)
+                self.state = LCDObserver.SETUP
+            
+            elif subject.state == TemperatureTarget.HYSTERESIS:
+                self._hysteresis = subject._hysteresis
+                self.lcd.message = "  Hysteresis:   \n     %.2f%cC    " % (self._hysteresis, 1)
+                self.state = LCDObserver.SETUP
+            
+            elif subject.state == TemperatureTarget.RUNNING:
+                self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (self._currentTemp, 1, self._targetTemp, 1)
+                self.state = LCDObserver.RUNNING
+
+        elif isinstance(subject, TemperatureSensor):
+            if self.state == LCDObserver.RUNNING:
+                self._currentTemp = subject._currentTemp
+                self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (self._currentTemp, 1, self._targetTemp, 1)

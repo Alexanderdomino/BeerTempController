@@ -16,7 +16,7 @@ class TemperatureSensor(ISubject):
 
     _currentTemp: int = None
     """
-    The Current temperature read by the sensor (Default = 0)
+    The Current temperature read by the sensor (Default = None)
     """
 
     _observers: List[IObserver] = []
@@ -54,3 +54,5 @@ class TemperatureSensor(ISubject):
 
         #print(f"Subject: Current Temperature is changed to: {self._currentTemp}")
         self.notify()
+    
+    
