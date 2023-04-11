@@ -12,20 +12,20 @@ class Heater(IActuator):
 
         # Set GPIO pin as an output
         GPIO.setup(self.heaterGPIO, GPIO.OUT)
-        GPIO.output(self.heaterGPIO, GPIO.LOW)
+        GPIO.output(self.heaterGPIO, GPIO.HIGH)
     
     def Start(self) -> None:
         """
         Sets the GPIO pin high and thereby starts the heater.
         """
-        GPIO.output(self.heaterGPIO, GPIO.HIGH)
+        GPIO.output(self.heaterGPIO, GPIO.LOW)
 
     
     def Stop(self) -> None:
         """
         Sets the GPIO pin low and thereby stops the heater.
         """
-        GPIO.output(self.heaterGPIO, GPIO.LOW)
+        GPIO.output(self.heaterGPIO, GPIO.HIGH)
 
     def __del__(self):
         """
