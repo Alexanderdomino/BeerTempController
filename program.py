@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
         while True:
             sensor.readTemperature()
-            sleep(60)
+            sleep(59)
 
     except KeyboardInterrupt:
         # Clean up the GPIO pins
