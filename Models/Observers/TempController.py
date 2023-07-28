@@ -35,14 +35,12 @@ class TempController(IObserver):
         elif isinstance(subject, TemperatureSensor):
             if self.state == TempController.IDLE:
                 if subject._currentTemp > (self._targetTemp + self._allowedHysteresis):
-                    # implement cooling logic
-                    print("Controller: Start cooling")
+                    # Cooling logic
                     self.cooler.Start()
                     self.state = TempController.COOLING
 
                 elif subject._currentTemp < (self._targetTemp - self._allowedHysteresis):
-                    # implement heating logic
-                    print("Controller: Start heating")
+                    # Heating logic
                     self.heater.Start()
                     self.state = TempController.HEATING
 
@@ -52,7 +50,6 @@ class TempController(IObserver):
                     print("Controller: Cooling in progress")
                 else:
                     # turn off cooling
-                    print("Controller: Cooling complete")
                     self.cooler.Stop()
                     self.state = TempController.IDLE
 
@@ -62,6 +59,5 @@ class TempController(IObserver):
                     print("Controller: Heating in progress")
                 else:
                     # turn off heating
-                    print("Controller: Heating complete")
                     self.heater.Stop()
                     self.state = TempController.IDLE

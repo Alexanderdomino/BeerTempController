@@ -25,7 +25,6 @@ class TemperatureSensor(ISubject):
     """
 
     def attach(self, observer: IObserver) -> None:
-        print("Subject: Attached an observer.")
         self._observers.append(observer)
 
     def detach(self, observer: IObserver) -> None:
