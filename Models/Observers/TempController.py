@@ -47,7 +47,7 @@ class TempController(IObserver):
             elif self.state == TempController.COOLING:
                 if subject._currentTemp > self._targetTemp:
                     # continue cooling
-                    print("Controller: Cooling in progress")
+                    self.cooler.Start()
                 else:
                     # turn off cooling
                     self.cooler.Stop()
@@ -56,7 +56,7 @@ class TempController(IObserver):
             elif self.state == TempController.HEATING:
                 if subject._currentTemp < self._targetTemp:
                     # continue heating
-                    print("Controller: Heating in progress")
+                    self.heater.Start()
                 else:
                     # turn off heating
                     self.heater.Stop()
