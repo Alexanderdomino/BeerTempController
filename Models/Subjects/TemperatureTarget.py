@@ -39,10 +39,10 @@ class TemperatureTarget(ISubject):
         GPIO.setup(TemperatureTarget.buttonOk, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
         GPIO.setup(TemperatureTarget.buttonStop, GPIO.IN, pull_up_down=GPIO.PUD_UP) 
 
-        GPIO.add_event_detect(TemperatureTarget.buttonUp, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonUp_callback(self), bouncetime=200)
-        GPIO.add_event_detect(TemperatureTarget.buttonDown, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonDown_callback(self), bouncetime=200)
-        GPIO.add_event_detect(TemperatureTarget.buttonOk, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonOk_callback(self), bouncetime=200)
-        GPIO.add_event_detect(TemperatureTarget.buttonStop, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonStop_callback(self), bouncetime=200)
+        GPIO.add_event_detect(TemperatureTarget.buttonUp, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonUp_callback(self), bouncetime=300)
+        GPIO.add_event_detect(TemperatureTarget.buttonDown, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonDown_callback(self), bouncetime=300)
+        GPIO.add_event_detect(TemperatureTarget.buttonOk, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonOk_callback(self), bouncetime=300)
+        GPIO.add_event_detect(TemperatureTarget.buttonStop, GPIO.FALLING, callback=lambda x: TemperatureTarget.buttonStop_callback(self), bouncetime=300)
 
         self.state = TemperatureTarget.TEMPTARGET
 
