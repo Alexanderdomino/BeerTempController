@@ -8,7 +8,7 @@ from Models.Subjects.TemperatureSensor import TemperatureSensor
 
 class TempController(IObserver):
     _allowedHysteresis: int = 1
-    _targetTemp: int = 27
+    _targetTemp: int = 20
 
     SETUP = 0
     IDLE = 1
