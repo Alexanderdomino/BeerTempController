@@ -48,11 +48,8 @@ class TemperatureSensor(ISubject):
         """
         Reads the current temperature and notifies observers of about the new reading.
         """
+        tmp_temp = self.tempSensor.get_temperature()
 
-        #print("\nSubject: Reading temperature.")
-        self._currentTemp = self.tempSensor.get_temperature()
-
-        #print(f"Subject: Current Temperature is changed to: {self._currentTemp}")
-        self.notify()
-    
-    
+        if 1 < tmp_temp < 40:
+            self._currentTemp = tmp_temp
+            self.notify()
