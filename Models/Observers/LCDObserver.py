@@ -20,6 +20,8 @@ class LCDObserver(IObserver):
     RUNNING = 1
 
     """--------------------------------------Display Setup---------------------------------------"""
+    _backlightTimer: int = 2
+
     # LCD size
     lcd_columns = 16
     lcd_rows = 2
@@ -69,9 +71,15 @@ class LCDObserver(IObserver):
                 self.reinitialize_lcd()
                 self.lcd.message = " Wait for first \n Measurement... "
                 self.state = LCDObserver.RUNNING
+                self._backlightTimer = 2
+
 
         elif isinstance(subject, TemperatureSensor):
             if self.state == LCDObserver.RUNNING:
                 self._currentTemp = subject._currentTemp
                 self.reinitialize_lcd()
                 self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (self._currentTemp, 1, self._targetTemp, 1)
+                if self._backlightTimer < 1:
+                    # turn off backlight
+                else:
+                    self._backlightTimer -= 1
