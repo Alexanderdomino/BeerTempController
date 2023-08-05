@@ -98,6 +98,10 @@ class TemperatureTarget(ISubject):
             channel.state = TemperatureTarget.RUNNING
             channel.notify()
 
+        elif channel.state == TemperatureTarget.CONFIRM_STOP:
+            channel.state = TemperatureTarget.TEMPTARGET
+            channel.notify()
+
     def buttonStop_callback(channel) -> None:
         print("ButtonStop was pushed!")
         if channel.state == TemperatureTarget.HYSTERESIS:
@@ -106,4 +110,8 @@ class TemperatureTarget(ISubject):
         
         elif channel.state == TemperatureTarget.RUNNING:
             channel.state = TemperatureTarget.CONFIRM_STOP
+            channel.notify()
+
+        elif channel.state == TemperatureTarget.CONFIRM_STOP:
+            channel.state = TemperatureTarget.RUNNING
             channel.notify()
