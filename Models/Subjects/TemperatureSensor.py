@@ -49,6 +49,6 @@ class TemperatureSensor(ISubject):
         """
         tmp_temp = self.tempSensor.get_temperature()
 
-        if 1 < tmp_temp < 40:
+        if 1 < tmp_temp < 50:
             self._currentTemp = tmp_temp
             self.notify()
