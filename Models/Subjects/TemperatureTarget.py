@@ -22,6 +22,7 @@ class TemperatureTarget(ISubject):
     TEMPTARGET = 0
     HYSTERESIS = 1
     RUNNING = 2
+    CONFIRM_STOP = 3
     """
     Program States
     """
@@ -104,5 +105,5 @@ class TemperatureTarget(ISubject):
             channel.notify()
         
         elif channel.state == TemperatureTarget.RUNNING:
-            channel.state = TemperatureTarget.TEMPTARGET
+            channel.state = TemperatureTarget.CONFIRM_STOP
             channel.notify()
