@@ -67,8 +67,12 @@ class LCDObserver(IObserver):
             
             elif subject.state == TemperatureTarget.RUNNING:
                 self.reinitialize_lcd()
-                self.lcd.message = " Wait for first \n Measurement... "
+                self.lcd.message = " Await the next \n Measurement... "
                 self.state = LCDObserver.RUNNING
+
+            elif subject.state == TemperatureTarget.CONFIRM_STOP:
+                self.reinitialize_lcd()
+                self.lcd.message = "Are you sure you\n want to stop?  "
 
         elif isinstance(subject, TemperatureSensor):
             if self.state == LCDObserver.RUNNING:
