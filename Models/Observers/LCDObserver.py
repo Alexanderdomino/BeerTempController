@@ -27,11 +27,11 @@ class LCDObserver(IObserver):
     def __init__(self):
         self.reinitialize_lcd()
         self.state = LCDObserver.SETUP
-        self.lcd.message = "   Welcome HJ   \nPress Any Button"
+        self.lcd.message = "   Welcome CJ   \nPress Any Button"
 
     def reinitialize_lcd(self):
         # Clean up the previous LCD instance if it exists
-        if hasattr(self, 'lcd'):
+        if hasattr(self, "lcd"):
             del self.lcd
 
         # GPIO setup
@@ -44,7 +44,14 @@ class LCDObserver(IObserver):
 
         # Definition of object
         self.lcd = characterlcd.Character_LCD_Mono(
-            lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7, self.lcd_columns, self.lcd_rows
+            lcd_rs,
+            lcd_en,
+            lcd_d4,
+            lcd_d5,
+            lcd_d6,
+            lcd_d7,
+            self.lcd_columns,
+            self.lcd_rows,
         )
 
         # Define the custom character for the degree symbol
@@ -56,15 +63,21 @@ class LCDObserver(IObserver):
             if subject.state == TemperatureTarget.TEMPTARGET:
                 self._targetTemp = subject._targetTemp
                 self.reinitialize_lcd()
-                self.lcd.message = " Select Target: \n     %.2f%cC    " % (self._targetTemp, 1)
+                self.lcd.message = " Select Target: \n     %.2f%cC    " % (
+                    self._targetTemp,
+                    1,
+                )
                 self.state = LCDObserver.SETUP
-            
+
             elif subject.state == TemperatureTarget.HYSTERESIS:
                 self._hysteresis = subject._hysteresis
                 self.reinitialize_lcd()
-                self.lcd.message = "  Hysteresis:   \n     %.2f%cC    " % (self._hysteresis, 1)
+                self.lcd.message = "  Hysteresis:   \n     %.2f%cC    " % (
+                    self._hysteresis,
+                    1,
+                )
                 self.state = LCDObserver.SETUP
-            
+
             elif subject.state == TemperatureTarget.RUNNING:
                 self.reinitialize_lcd()
                 self.lcd.message = " Await the next \n Measurement... "
@@ -78,4 +91,9 @@ class LCDObserver(IObserver):
             if self.state == LCDObserver.RUNNING:
                 self._currentTemp = subject._currentTemp
                 self.reinitialize_lcd()
-                self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (self._currentTemp, 1, self._targetTemp, 1)
+                self.lcd.message = "Temp:    %.2f%cC\nTarget:  %.2f%cC" % (
+                    self._currentTemp,
+                    1,
+                    self._targetTemp,
+                    1,
+                )
