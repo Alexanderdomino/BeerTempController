@@ -103,8 +103,11 @@ class TemperatureTarget(ISubject):
             self.state = TemperatureTarget.TEMPTARGET
             self.notify()
 
-    def get_config(self) -> float:
-        return {self._targetTemp, self._hysteresis}
+    def get_config(self) -> dict:
+        return {
+        "target_temperature": self._targetTemp,
+        "hysteresis": self._hysteresis
+        }
 
     # --------------------------------------Button Callbacks---------------------------------------
     def buttonUp_callback(channel) -> None:
