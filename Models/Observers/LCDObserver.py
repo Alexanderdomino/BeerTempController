@@ -27,7 +27,7 @@ class LCDObserver(IObserver):
     def __init__(self):
         self.reinitialize_lcd()
         self.state = LCDObserver.SETUP
-        self.lcd.message = "   Welcome CJ   \nPress Any Button"
+        self.lcd.message = " Welcome Jensen \nPress Any Button"
 
     def reinitialize_lcd(self):
         # Clean up the previous LCD instance if it exists
